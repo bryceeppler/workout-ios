@@ -9,6 +9,9 @@ import SwiftUI
 
 struct WorkoutDetailView: View {
     @EnvironmentObject var workoutService: WorkoutService
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+
+
 
     let workout: Workout
     var formattedDate: String {
@@ -33,29 +36,38 @@ struct WorkoutDetailView: View {
     var body: some View {
         let userData = UserDefaults.standard.value(forKey: "user") as? Data
         let user = try? PropertyListDecoder().decode(User.self, from: userData ?? Data())
-        VStack(alignment: .leading) {
-            Text("Title: \(workout.title)")
-            Text("Date: \(formattedDate)")
-            ScrollView{
-                Text(workout.workout_str!)
+            VStack(alignment: .leading) {
+                Text("Title: \(workout.title)")
+                Text("Date: \(formattedDate)")
+                ScrollView{
+                    Text(workout.workout_str!)
+                }
+                HStack (alignment:.center) {
+                    Button("Skip") {
+                        Task {
+                            await complete(userId:user?.id ?? 0, status:"skipped")
+                            presentationMode.wrappedValue.dismiss()
+
+                        }
+                    }.buttonStyle(.borderedProminent)
+                        Button("Complete") {
+                            
+                            Task {
+                                await complete(userId:user?.id ?? 0, status:"completed")
+                                presentationMode.wrappedValue.dismiss()
+                            
+                            
+                            }
+                        }.buttonStyle(.borderedProminent)
+                        
+                        
+                }
+                .frame(minWidth:0, maxWidth:.infinity)
+                
+                
             }
-            HStack (alignment:.center) {
-                Button("Skip") {
-                    Task {
-                        await complete(userId:user?.id ?? 0, status:"skipped")
-                    }
-                }.buttonStyle(.borderedProminent)
-                Button("Complete") {
-                    Task {
-                        await complete(userId:user?.id ?? 0, status:"completed")
-                    }
-                }.buttonStyle(.borderedProminent)
-            }
-            .frame(minWidth:0, maxWidth:.infinity)
-            
-            
-        }
-        .padding()
+            .padding()
+        
     }
 
 }

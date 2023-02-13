@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct Workout: Codable {
+struct Workout: Hashable, Codable {
     var id: Int
     var title: String
     var workout_number: Int
@@ -36,24 +36,10 @@ struct ContentView: View {
         let user = try? PropertyListDecoder().decode(User.self, from: userData ?? Data())
         
 
-        NavigationView{
+        NavigationStack {
 
             ScrollView(showsIndicators: false){
-                    //  username
-                    HStack () {
-                        Image("bigwipes")
-                            .resizable()
-                            .frame(width:64, height:64)
-                            .background(Color("Paper"))
-                            .clipShape(Circle())
-                            .padding(.trailing, 20)
-                        VStack (alignment: .leading){
-                            Text(user?.username ?? "eppler97")
-                                .bold()
-                                .font(.system(size:24))
-                            Text("\(workoutService.userStats.filter({ $0.id == user?.id }).first?.totalPoints ?? 0) points")                        }
-                    }
-                    .frame(minWidth:0, maxWidth: .infinity, alignment: .leading)
+                UserInfo(user: user)
                 
                 Spacer(minLength: 40)
                     
@@ -62,7 +48,7 @@ struct ContentView: View {
                     Text("Upcoming")
                         .font(.system(size:24))
                     ForEach(workoutService.workouts.prefix(3), id: \.id) { workout in
-                        NavigationLink(destination: WorkoutDetailView(workout:workout)) {
+                        NavigationLink(value: workout) {
                             HStack {
                                 Text(workout.title)
                                 Spacer()
@@ -71,6 +57,9 @@ struct ContentView: View {
                             .padding(25)
                             .background(Color("Paper"))
                             .cornerRadius(5)
+                        }
+                        .navigationDestination(for: Workout.self) { workout in
+                            WorkoutDetailView(workout: workout)
                         }
                         .buttonStyle(PlainButtonStyle())
                     }
@@ -146,9 +135,31 @@ struct ContentView: View {
             }
   
         }
+
     }
 }
-
+struct UserInfo: View {
+    @EnvironmentObject private var workoutService: WorkoutService
+    
+    var user: User?
+    
+    var body: some View {
+        HStack () {
+            Image("bigwipes")
+                .resizable()
+                .frame(width:64, height:64)
+                .background(Color("Paper"))
+                .clipShape(Circle())
+                .padding(.trailing, 20)
+            VStack (alignment: .leading){
+                Text(user?.username ?? "eppler97")
+                    .bold()
+                    .font(.system(size:24))
+                Text("\(workoutService.userStats.filter({ $0.id == user?.id }).first?.totalPoints ?? 0) points")                        }
+        }
+        .frame(minWidth:0, maxWidth: .infinity, alignment: .leading)
+    }
+}
 struct ContentView_Previews: PreviewProvider {
     
     static var previews: some View {
