@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct OnslaughtApp: App {
+    @StateObject private var workoutService = WorkoutService()
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            ContentView().environmentObject(workoutService)
         }
     }
 }

@@ -13,6 +13,10 @@
 		7E748EBF29992FAD000DB732 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E748EBE29992FAD000DB732 /* Preview Assets.xcassets */; };
 		7E748EC629994208000DB732 /* WorkoutDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E748EC529994208000DB732 /* WorkoutDetailView.swift */; };
 		7E748EC829994EFF000DB732 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E748EC729994EFF000DB732 /* LoginView.swift */; };
+		7E9C4AA2299A6F7800F44FAC /* WorkoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9C4AA1299A6F7800F44FAC /* WorkoutService.swift */; };
+		7E9C4AA5299A705C00F44FAC /* WorkoutListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9C4AA4299A705C00F44FAC /* WorkoutListResponse.swift */; };
+		7EA371AC299A7C9C007DFD48 /* TestResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA371AB299A7C9C007DFD48 /* TestResponse.swift */; };
+		7EA371B0299A8328007DFD48 /* StatsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA371AF299A8328007DFD48 /* StatsResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +27,10 @@
 		7E748EBE29992FAD000DB732 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7E748EC529994208000DB732 /* WorkoutDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDetailView.swift; sourceTree = "<group>"; };
 		7E748EC729994EFF000DB732 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		7E9C4AA1299A6F7800F44FAC /* WorkoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutService.swift; sourceTree = "<group>"; };
+		7E9C4AA4299A705C00F44FAC /* WorkoutListResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutListResponse.swift; sourceTree = "<group>"; };
+		7EA371AB299A7C9C007DFD48 /* TestResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResponse.swift; sourceTree = "<group>"; };
+		7EA371AF299A8328007DFD48 /* StatsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +63,8 @@
 		7E748EB629992FAC000DB732 /* Onslaught */ = {
 			isa = PBXGroup;
 			children = (
+				7E9C4AA3299A704B00F44FAC /* Responses */,
+				7E9C4AA0299A6F5000F44FAC /* Services */,
 				7E748EC729994EFF000DB732 /* LoginView.swift */,
 				7E748EB729992FAC000DB732 /* OnslaughtApp.swift */,
 				7E748EB929992FAC000DB732 /* ContentView.swift */,
@@ -71,6 +81,24 @@
 				7E748EBE29992FAD000DB732 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		7E9C4AA0299A6F5000F44FAC /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				7E9C4AA1299A6F7800F44FAC /* WorkoutService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		7E9C4AA3299A704B00F44FAC /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				7E9C4AA4299A705C00F44FAC /* WorkoutListResponse.swift */,
+				7EA371AB299A7C9C007DFD48 /* TestResponse.swift */,
+				7EA371AF299A8328007DFD48 /* StatsResponse.swift */,
+			);
+			path = Responses;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,9 +171,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E9C4AA2299A6F7800F44FAC /* WorkoutService.swift in Sources */,
 				7E748EBA29992FAC000DB732 /* ContentView.swift in Sources */,
+				7E9C4AA5299A705C00F44FAC /* WorkoutListResponse.swift in Sources */,
 				7E748EC629994208000DB732 /* WorkoutDetailView.swift in Sources */,
+				7EA371B0299A8328007DFD48 /* StatsResponse.swift in Sources */,
 				7E748EC829994EFF000DB732 /* LoginView.swift in Sources */,
+				7EA371AC299A7C9C007DFD48 /* TestResponse.swift in Sources */,
 				7E748EB829992FAC000DB732 /* OnslaughtApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

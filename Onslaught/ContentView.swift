@@ -8,9 +8,17 @@ struct Workout: Codable {
     var date: String
 }
 
+struct UserStats: Codable {
+    var id: Int
+    var username: String
+    var coldPlunges: Int
+    var completedWorkouts: Int
+    var cardioSessions: Int
+    var totalPoints: Int
+}
+
 
 struct ContentView: View {
-    @State private var workouts: [Workout] = []
     func formatDate(date: String) -> String {
          let dateFormatter = DateFormatter()
          dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
@@ -22,72 +30,122 @@ struct ContentView: View {
      }
     
     
-
-
+    @EnvironmentObject private var workoutService: WorkoutService
     var body: some View {
         let userData = UserDefaults.standard.value(forKey: "user") as? Data
         let user = try? PropertyListDecoder().decode(User.self, from: userData ?? Data())
+        
 
         NavigationView{
-            VStack (alignment: .leading, spacing: 20) {
-                //  username
-                HStack () {
-                    Image("bigwipes")
-                        .resizable()
-                        .frame(width:64, height:64)
-                        .background(Color("Paper"))
-                        .clipShape(Circle())
-                        .padding(.trailing, 20)
-                    VStack (alignment: .leading){
-                        Text(user?.username ?? "")
-                            .bold()
-                            .font(.system(size:24))
-                        Text("45 points")
+
+            ScrollView(showsIndicators: false){
+                    //  username
+                    HStack () {
+                        Image("bigwipes")
+                            .resizable()
+                            .frame(width:64, height:64)
+                            .background(Color("Paper"))
+                            .clipShape(Circle())
+                            .padding(.trailing, 20)
+                        VStack (alignment: .leading){
+                            Text(user?.username ?? "eppler97")
+                                .bold()
+                                .font(.system(size:24))
+                            Text("\(workoutService.userStats.filter({ $0.id == user?.id }).first?.totalPoints ?? 0) points")                        }
                     }
-                }
-                .frame(minWidth:0, maxWidth: .infinity, alignment: .leading)
+                    .frame(minWidth:0, maxWidth: .infinity, alignment: .leading)
                 
-                //  upcoming
-                Text("Upcoming")
-                    .font(.system(size:24))
-                ForEach(workouts.prefix(3), id: \.id) { workout in
-                    NavigationLink(destination: WorkoutDetailView(workout:workout)) {
-                        HStack {
-                            Text(workout.title)
-                            Spacer()
-                            Text(formatDate(date:workout.date))
+                Spacer(minLength: 40)
+                    
+                VStack(alignment: .leading) {
+                    //  upcoming
+                    Text("Upcoming")
+                        .font(.system(size:24))
+                    ForEach(workoutService.workouts.prefix(3), id: \.id) { workout in
+                        NavigationLink(destination: WorkoutDetailView(workout:workout)) {
+                            HStack {
+                                Text(workout.title)
+                                Spacer()
+                                Text(formatDate(date:workout.date))
+                            }
+                            .padding(25)
+                            .background(Color("Paper"))
+                            .cornerRadius(5)
                         }
-                        .padding(25)
-                        .background(Color("Paper"))
-                        .cornerRadius(5)
+                        .buttonStyle(PlainButtonStyle())
                     }
-                    .buttonStyle(PlainButtonStyle())
                 }
+
+                Spacer(minLength: 40)
+
+
+                VStack(alignment: .leading) {
+                    
+                    Text("Stats")
+                        .font(.system(size:24))
+                    Grid {
+                        GridRow {
+                            VStack {
+                                Text("\(workoutService.userStats.filter({ $0.id == user?.id }).first?.completedWorkouts ?? 0)")
+                                      .font(.system(size:24))
+                                      .bold()
+                                Text("workouts")
+                            }
+                            .padding(4)
+                            VStack {
+                                Text("\(workoutService.userStats.filter({ $0.id == user?.id }).first?.coldPlunges ?? 0)")                                    .font(.system(size:24))
+                                    .bold()
+                                Text("cold plunges")
+                            }
+                            .padding(4)
+                            VStack {
+                                Text("\(workoutService.userStats.filter({ $0.id == user?.id }).first?.cardioSessions ?? 0)")                                    .font(.system(size:24))
+                                    .bold()
+                                Text("cardio")
+                            }
+                            .padding(4)
+                        }
+                        .frame(minWidth: 0, maxWidth: .infinity)
+                    }
+                    .frame(minWidth: 0, maxWidth: .infinity)
+                }
+                Spacer(minLength: 40)
+                VStack(alignment: .leading) {
+                    
+                    Text("Leaderboard")
+                        .font(.system(size:24))
+                    VStack{
+                        let maxTotalPoints = workoutService.userStats.map({ $0.totalPoints }).max() ?? 0
+                        ForEach(workoutService.userStats.sorted(by: { $0.totalPoints > $1.totalPoints }).prefix(3), id: \.id) { user in
+                            VStack(alignment: .leading){
+                                HStack{
+                                    Text("\(user.username)")
+                                        .bold()
+                                    Text("\(user.totalPoints) points")
+                                }
+                                ProgressView(value: Double(user.totalPoints), total: Double(maxTotalPoints))
+                                    .progressViewStyle(.linear)
+                                    .accentColor(Color(.green))
+                                    .scaleEffect(x:1, y:2)
+
+                            }.padding(10)
+                        }
+                    }
+                    
+                }
+                
+                
+
             }
             .frame(minHeight:0, maxHeight: .infinity, alignment: .top)
             .padding(20)
-            .onAppear(perform: loadWorkouts)
-        }
-    }
-    private func loadWorkouts() {
-        let url = URL(string: "http://10.0.0.101:3000/workouts/")!
-        let request = URLRequest(url: url)
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let data = data {
-                let decoder = JSONDecoder()
-                if let workouts = try? decoder.decode([Workout].self, from: data) {
-                    DispatchQueue.main.async {
-                        self.workouts = workouts
-                    }
-                    for workout in workouts {
-                        print(workout.date)
-                    }
-                } else {
-                    print("err decoding json")
-                }
+            .task {
+                try? await workoutService.getUserStatsList()
+
+                try? await workoutService.getWorkoutList()
             }
-        }.resume()
+  
+        }
     }
 }
 
