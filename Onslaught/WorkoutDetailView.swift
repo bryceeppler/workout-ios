@@ -40,7 +40,7 @@ struct WorkoutDetailView: View {
                 Text("Title: \(workout.title)")
                 Text("Date: \(formattedDate)")
                 ScrollView{
-                    Text(workout.workout_str!)
+                    Text(workout.workout_str ?? "")
                 }
                 HStack (alignment:.center) {
                     Button("Skip") {

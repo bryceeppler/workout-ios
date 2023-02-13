@@ -14,6 +14,12 @@ struct CompletedWorkout: Codable {
     var title: String
 }
 
+struct SubmittedActivity: Codable {
+    var uid: Int
+    var duration: Int
+    var date: Date
+}
+
 enum WorkoutError: Error {
     case custom(String)
 }
@@ -67,6 +73,29 @@ class WorkoutService: ObservableObject {
             print("Workout completed successfully.")
         } else {
             throw WorkoutError.custom("Error in WorkoutService.swift")
+        }
+    }
+    
+    func createActivity(userId: Int, duration: Int, date: Date, type: String) async throws {
+        var endpoint:String;
+        if (type == "Cold Plunge") {
+            endpoint = "http://10.0.0.101:3000/createIcePlunge"
+        } else {
+            endpoint = "http://10.0.0.101:3000/createCardioSession"
+        }
+        let activity = SubmittedActivity(uid: userId, duration: duration, date: date)
+        let jsonEncoder = JSONEncoder()
+        let activityData = try jsonEncoder.encode(activity)
+        var request = URLRequest(url: URL(string: endpoint)!)
+        request.httpMethod = "POST"
+        request.httpBody = activityData
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let response = try JSONDecoder().decode(CompleteWorkoutResponse.self, from: data)
+        if response.success {
+            print("Activity added successfully.")
+        } else {
+            throw WorkoutError.custom("Error in WorkoutService.swift in createIcePlunge")
         }
     }
 

@@ -17,6 +17,87 @@ struct UserStats: Codable {
     var totalPoints: Int
 }
 
+struct ActivitySheetView: View {
+    @Environment(\.presentationMode) var presentationMode
+    
+    @State private var selectedType = "Cold Plunge"
+    @State private var selectedDate = Date()
+    @State private var selectedDuration = 0
+    
+    let types = ["Cold Plunge", "Cardio"]
+    @EnvironmentObject private var workoutService: WorkoutService
+    private func submit(userId:Int, duration:Int, date:Date) async {
+        let activityType = selectedType
+        do {
+            try await workoutService.createActivity(userId: userId, duration: selectedDuration, date: selectedDate, type:activityType)
+        } catch {
+            print("err in submit iceplunge")
+        }
+    }
+    var body: some View {
+        let userData = UserDefaults.standard.value(forKey: "user") as? Data
+        let user = try? PropertyListDecoder().decode(User.self, from: userData ?? Data())
+        NavigationView {
+            Form {
+                Picker(selection: $selectedType, label: Text("Activity Type")) {
+                    ForEach(types, id: \.self) { type in
+                        Text(type).tag(type)
+                    }
+                }.padding(5)
+                
+                DatePicker(selection: $selectedDate, displayedComponents: .date) {
+                    Text("Date")
+                }.padding(5)
+                
+                Stepper(value: $selectedDuration, in: 0...120, step: 1) {
+                    Text("Duration (min): \(selectedDuration)")
+                }.padding(5)
+                         
+                         HStack {
+                             Button("Discard") {
+                                 self.presentationMode.wrappedValue.dismiss()
+                             }
+                             
+                             Spacer()
+                             
+                             Button("Submit") {
+                                 // Perform actions when submit is pressed
+                                 // For example: store the selected data in UserDefaults, send it to a server, etc.
+                                 Task {
+                                     await submit(userId: user?.id ?? 0, duration: selectedDuration, date: selectedDate)
+                                     presentationMode.wrappedValue.dismiss()
+                                 
+                                 
+                                 }
+                                 
+                             }
+                         }.padding(10)
+                     }
+            
+                     .navigationBarTitle("New Activity")
+                     
+                 }
+             }
+         }
+     
+                         
+                         
+                         
+                         
+                         
+                         
+struct HistorySheetView: View {
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        Text("History")
+        Button("Press to dismiss") {
+            dismiss()
+        }
+        .font(.title)
+        .padding()
+    }
+}
 
 struct ContentView: View {
     func formatDate(date: String) -> String {
@@ -29,7 +110,10 @@ struct ContentView: View {
          return dateFormatter.string(from: formattedDate)
      }
     
-    
+    @State private var showingActivitySheet = false
+    @State private var showingHistorySheet = false
+
+
     @EnvironmentObject private var workoutService: WorkoutService
     var body: some View {
         let userData = UserDefaults.standard.value(forKey: "user") as? Data
@@ -40,6 +124,21 @@ struct ContentView: View {
 
             ScrollView(showsIndicators: false){
                 UserInfo(user: user)
+                HStack {
+                    Button("History") {
+                        showingHistorySheet.toggle()
+                    }.buttonStyle(.borderedProminent)
+                    .sheet(isPresented: $showingHistorySheet) {
+                        HistorySheetView()
+                    }
+                    Button("Activities") {
+                        showingActivitySheet.toggle()
+                    }.buttonStyle(.borderedProminent)
+                    .sheet(isPresented: $showingActivitySheet) {
+                        ActivitySheetView()
+                    }
+                        
+                }
                 
                 Spacer(minLength: 40)
                     
