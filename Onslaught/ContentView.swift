@@ -142,7 +142,7 @@ struct ContentView: View {
             .task {
                 try? await workoutService.getUserStatsList()
 
-                try? await workoutService.getWorkoutList()
+                try? await workoutService.getWorkoutList(userId:user?.id)
             }
   
         }
@@ -150,7 +150,9 @@ struct ContentView: View {
 }
 
 struct ContentView_Previews: PreviewProvider {
+    
     static var previews: some View {
         ContentView()
+            .environmentObject(WorkoutService())
     }
 }

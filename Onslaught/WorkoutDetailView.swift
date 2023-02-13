@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct WorkoutDetailView: View {
+    @EnvironmentObject var workoutService: WorkoutService
+
     let workout: Workout
     var formattedDate: String {
         let dateFormatter = DateFormatter()
@@ -18,7 +20,19 @@ struct WorkoutDetailView: View {
         dateFormatter.dateFormat = "MMM dd"
         return dateFormatter.string(from: formattedDate)
     }
+    var errorMessage = ""
+    
+    private func complete(userId:Int, status:String) async {
+        do {
+            try await workoutService.createCompletedWorkout(userId: userId, workoutId: workout.id, status: status, title: workout.title)
+        } catch {
+            print("err in complete workout")
+        }
+    }
+    
     var body: some View {
+        let userData = UserDefaults.standard.value(forKey: "user") as? Data
+        let user = try? PropertyListDecoder().decode(User.self, from: userData ?? Data())
         VStack(alignment: .leading) {
             Text("Title: \(workout.title)")
             Text("Date: \(formattedDate)")
@@ -26,24 +40,16 @@ struct WorkoutDetailView: View {
                 Text(workout.workout_str!)
             }
             HStack (alignment:.center) {
-                Button(action: {
-                    // skip
-                }) {
-                    Text("Skip")
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(LinearGradient(gradient: Gradient(colors: [.blue, .purple]), startPoint: .leading, endPoint: .trailing))
-                        .cornerRadius(10)
-                }
-                Button(action: {
-                    // add action for complete button here
-                }) {
-                    Text("Complete")
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(LinearGradient(gradient: Gradient(colors: [.blue, .purple]), startPoint: .leading, endPoint: .trailing))
-                        .cornerRadius(10)
-                }
+                Button("Skip") {
+                    Task {
+                        await complete(userId:user?.id ?? 0, status:"skipped")
+                    }
+                }.buttonStyle(.borderedProminent)
+                Button("Complete") {
+                    Task {
+                        await complete(userId:user?.id ?? 0, status:"completed")
+                    }
+                }.buttonStyle(.borderedProminent)
             }
             .frame(minWidth:0, maxWidth:.infinity)
             

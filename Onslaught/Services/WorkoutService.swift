@@ -7,6 +7,13 @@
 
 import Foundation
 
+struct CompletedWorkout: Codable {
+    var id: Int
+    var userId: Int
+    var status: String
+    var title: String
+}
+
 enum WorkoutError: Error {
     case custom(String)
 }
@@ -15,9 +22,9 @@ enum WorkoutError: Error {
 class WorkoutService: ObservableObject {
     @Published var workouts: [Workout] = []
     @Published var userStats: [UserStats] = []
-    func getWorkoutList() async throws {
+    func getWorkoutList(userId:Int?) async throws {
         let (data, _) = try await URLSession.shared.data(from: URL(string:
-                                                                  "http://10.0.0.101:3000/workouts/")!)
+                                                                    "http://10.0.0.101:3000/incompleteworkouts/\(userId ?? 1)")!)
         
         let workoutListResponse = try JSONDecoder().decode(WorkoutListResponse.self, from: data)
         if workoutListResponse.success {
@@ -45,5 +52,22 @@ class WorkoutService: ObservableObject {
         }
         
     }
-    
+    func createCompletedWorkout(userId: Int, workoutId: Int, status: String, title: String) async throws {
+        let endpoint = "http://10.0.0.101:3000/completeWorkout"
+        let workout = CompletedWorkout(id: workoutId, userId: userId, status: status, title: title)
+        let jsonEncoder = JSONEncoder()
+        let workoutData = try jsonEncoder.encode(workout)
+        var request = URLRequest(url: URL(string: endpoint)!)
+        request.httpMethod = "POST"
+        request.httpBody = workoutData
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let response = try JSONDecoder().decode(CompleteWorkoutResponse.self, from: data)
+        if response.success {
+            print("Workout completed successfully.")
+        } else {
+            throw WorkoutError.custom("Error in WorkoutService.swift")
+        }
+    }
+
 }

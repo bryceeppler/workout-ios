@@ -17,6 +17,7 @@
 		7E9C4AA5299A705C00F44FAC /* WorkoutListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9C4AA4299A705C00F44FAC /* WorkoutListResponse.swift */; };
 		7EA371AC299A7C9C007DFD48 /* TestResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA371AB299A7C9C007DFD48 /* TestResponse.swift */; };
 		7EA371B0299A8328007DFD48 /* StatsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA371AF299A8328007DFD48 /* StatsResponse.swift */; };
+		7EA371B2299A8D47007DFD48 /* CompleteWorkoutResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA371B1299A8D47007DFD48 /* CompleteWorkoutResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		7E9C4AA4299A705C00F44FAC /* WorkoutListResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutListResponse.swift; sourceTree = "<group>"; };
 		7EA371AB299A7C9C007DFD48 /* TestResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResponse.swift; sourceTree = "<group>"; };
 		7EA371AF299A8328007DFD48 /* StatsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsResponse.swift; sourceTree = "<group>"; };
+		7EA371B1299A8D47007DFD48 /* CompleteWorkoutResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteWorkoutResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				7E9C4AA4299A705C00F44FAC /* WorkoutListResponse.swift */,
 				7EA371AB299A7C9C007DFD48 /* TestResponse.swift */,
 				7EA371AF299A8328007DFD48 /* StatsResponse.swift */,
+				7EA371B1299A8D47007DFD48 /* CompleteWorkoutResponse.swift */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -177,6 +180,7 @@
 				7E748EC629994208000DB732 /* WorkoutDetailView.swift in Sources */,
 				7EA371B0299A8328007DFD48 /* StatsResponse.swift in Sources */,
 				7E748EC829994EFF000DB732 /* LoginView.swift in Sources */,
+				7EA371B2299A8D47007DFD48 /* CompleteWorkoutResponse.swift in Sources */,
 				7EA371AC299A7C9C007DFD48 /* TestResponse.swift in Sources */,
 				7E748EB829992FAC000DB732 /* OnslaughtApp.swift in Sources */,
 			);
